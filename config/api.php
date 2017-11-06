@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'domain' => env('API_DOMAIN', null),
+    'domain' => env('API_DOMAIN', 'lohostca'),
 
     /*
     |--------------------------------------------------------------------------
@@ -169,7 +169,7 @@ return [
     */
 
     'auth' => [
-
+        'jwt' => \Dingo\Api\Auth\Provider\JWT::class
     ],
 
     /*

@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use \Illuminate\Contracts\Auth\Authenticatable as AuthContract;
 
 /**
  * User.
@@ -22,12 +25,19 @@ use Illuminate\Support\Collection;
  * @property Collection $messengers
  * @property Collection $tags
  */
-class User extends Eloquent
+class User extends Eloquent implements JWTSubject, AuthContract
 {
-	const RATING = 'rating';
+	use Authenticatable;
+
+    const FIRST_NAME = 'first_name';
+	const LAST_NAME = 'last_name';
+    const EMAIL = 'last_name';
+    const RATING = 'rating';
 	const LOGIN = 'login';
 	const PASSWORD = 'password';
 	const REMEMBER_TOKEN = 'remember_token';
+
+	protected $table = 'users';
 
     protected $casts = [
 		self::RATING => 'float'
@@ -57,4 +67,16 @@ class User extends Eloquent
 	{
 		return $this->belongsToMany(Tag::class, 'user_tags');
 	}
+
+    public function getJWTIdentifier(): string
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims(): array
+    {
+        return [];
+    }
+
+
 }
