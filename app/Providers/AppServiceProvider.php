@@ -7,6 +7,8 @@ use App\Contracts\ITransformer;
 use App\Http\Controllers\Api\v1\UsersController;
 use App\Models\Repositories\UsersRepository;
 use App\Transformers\BaseTransformer;
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Illuminate\Support\ServiceProvider;
 use Reliese\Coders\CodersServiceProvider;
 
@@ -36,5 +38,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->when(UsersController::class)
             ->needs(IRepository::class)
             ->give(UsersRepository::class);
+        $this->app->bind(ClientInterface::class, Client::class);
     }
 }

@@ -4,13 +4,13 @@ namespace App\Http\Requests;
 
 use Dingo\Api\Http\Request;
 
-class LoginRequest extends Request
+class PrependAuthRequest extends Request
 {
     public function rules(): array
     {
         return [
-            'email' => 'required|string',
-            'password' => 'required|string'
+            'login' => 'required|string',
+            'messenger_id' => 'required|int'
         ];
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use \Illuminate\Contracts\Auth\Authenticatable as AuthContract;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * User.
@@ -22,7 +23,7 @@ use \Illuminate\Contracts\Auth\Authenticatable as AuthContract;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
- * @property Collection $messengers
+ * @property Collection $availableMessengers
  * @property Collection $tags
  */
 class User extends Eloquent implements JWTSubject, AuthContract
@@ -31,10 +32,8 @@ class User extends Eloquent implements JWTSubject, AuthContract
 
     const FIRST_NAME = 'first_name';
 	const LAST_NAME = 'last_name';
-    const EMAIL = 'last_name';
     const RATING = 'rating';
 	const LOGIN = 'login';
-	const PASSWORD = 'password';
 	const REMEMBER_TOKEN = 'remember_token';
 
 	protected $table = 'users';
@@ -44,7 +43,6 @@ class User extends Eloquent implements JWTSubject, AuthContract
 	];
 
 	protected $hidden = [
-		'password',
 		'remember_token'
 	];
 
@@ -52,15 +50,11 @@ class User extends Eloquent implements JWTSubject, AuthContract
 		'first_name',
 		'last_name',
 		'login',
-		'password',
-		'rating',
-		'remember_token'
 	];
 
-	public function messengers(): BelongsToMany
+	public function availableMessengers(): HasMany
 	{
-		return $this->belongsToMany(Messenger::class, 'user_messengers')
-					->withTimestamps();
+		return $this->hasMany(UserMessenger::class);
 	}
 
 	public function tags(): BelongsToMany
@@ -78,5 +72,13 @@ class User extends Eloquent implements JWTSubject, AuthContract
         return [];
     }
 
-
+    public function getMessengerUnique(int $messenger_id): ?string
+    {
+        /** @var UserMessenger $userMessenger */
+        $userMessenger = UserMessenger::query()
+            ->where('user_id', '=', $this->id)
+            ->where('messenger_id','=',$messenger_id)
+            ->first();
+        return $userMessenger->messenger_unique_id;
+    }
 }

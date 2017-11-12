@@ -12,13 +12,18 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $messenger_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
+ * @property string $messenger_unique_id
  * 
  * @property \App\Models\Messenger $messenger
  * @property \App\Models\User $user
  */
 class UserMessenger extends Eloquent
 {
-	public $incrementing = false;
+	const USER_ID = 'user_id';
+	const MESSENGER_ID = 'messenger_id';
+	const UNIQUE = 'messenger_unique_id';
+
+    public $incrementing = false;
 
 	protected $casts = [
 		'user_id' => 'int',

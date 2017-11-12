@@ -16,7 +16,9 @@ class CreateUserMessengersTable extends Migration
         Schema::create('user_messengers', function (Blueprint $table) {
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('messenger_id');
+            $table->string('messenger_unique_id');
             $table->timestamps();
+            $table->unique(['user_id', 'messenger_id']);
         });
     }
 
