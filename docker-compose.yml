@@ -1,4 +1,4 @@
-version: '3.4'
+version: '2.1'
 services:
 
   app:
@@ -9,7 +9,11 @@ services:
         - .:/home/www/app
         - ~/.composer:/root/.composer
         - ./docker/root/nginx/host.d:/etc/nginx/conf.d
- 
+    ports:
+      - 0.0.0.0:7000:80/tcp
+    networks:
+      - chat
+
   db:
     image: mysql:5.7
     hostname: chat-db

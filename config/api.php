@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'domain' => env('API_DOMAIN', 'lohostca'),
+    'domain' => env('API_DOMAIN', 'localhost'),
 
     /*
     |--------------------------------------------------------------------------
