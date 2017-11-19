@@ -9,7 +9,7 @@ class TelegramService
 {
     protected $client;
 
-    protected $uri = 'temp';
+    protected $uri = 'https://ekbrand.tk/express/';
 
     protected static $defaultHeaders = [
         'Accept' => 'application/json',
@@ -23,7 +23,7 @@ class TelegramService
 
     public function sendAuth(string $uniqueId): void
     {
-        $this->request('POST', 'sendmessage', [
+        $this->request('POST', 'auth', [
             'json' => ['chatId' => $uniqueId],
             'headers' => static::$defaultHeaders,
         ]);

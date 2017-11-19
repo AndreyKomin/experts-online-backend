@@ -48,14 +48,14 @@ services:
       args:
           APP_ENV: local
     image: chat-echo-server
-    expose:
-    - 6001
     hostname: chat-echo
     container_name: chat-echo
     labels:
       SERVICE_NAME: chat-echo
     depends_on:
       - redis
+    ports:
+      - 0.0.0.0:6001:6001/tcp
     networks:
       - chat
 

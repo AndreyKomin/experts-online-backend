@@ -20,7 +20,7 @@ use App\Http\Controllers\Api\v1\BotController;
 $api = app(Router::class);
 
 $api->version('v1', function (Router $api) {
-
+    $api->get('/users', UsersController::class . '@index');
     $api->post('/auth', LoginController::class . '@authenticate');
 
     $api->group([], function (Router $api) {
@@ -34,7 +34,7 @@ $api->version('v1', function (Router $api) {
         $api->put('/auth', LoginController::class . '@refreshToken');
 
 
-        $api->get('/users', UsersController::class . '@index');
+
         $api->put('/users/{user}', UsersController::class . '@update');
     });
 });

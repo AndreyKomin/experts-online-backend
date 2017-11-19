@@ -10,9 +10,10 @@ use App\Models\Repositories\UserMessengerRepository;
 use App\Models\User;
 use App\Services\UserService;
 use App\Transformers\BaseTransformer;
-use Dingo\Api\Http\Request;
+
 use Dingo\Api\Http\Response;
 use Dingo\Api\Routing\Helpers;
+use Illuminate\Http\Request;
 
 class BotController extends Controller
 {
@@ -34,14 +35,15 @@ class BotController extends Controller
         $this->userService = $userService;
     }
 
-    public function decision(BotsDecisionRequest $request): Response
+    public function decision(Request $request): Response
     {
+
         $userMessenger = $this->userMessengerRepository->findOrFailByUniqueAndMessenger(
-            $request->getChatId(),
-            $this->messengerRepository->findOrFailByCode($request->getCode())
+            $request->get('chatId'),
+            $this->messengerRepository->findOrFailByCode($request->get('code'))
         );
 
-        event(new MessengerAuthEvent($userMessenger->user, $request->getDecision()));
+        event(new MessengerAuthEvent($userMessenger->user, $request->get('decision')));
         return $this->response->noContent();
     }
 

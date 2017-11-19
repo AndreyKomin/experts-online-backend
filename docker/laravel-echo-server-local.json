@@ -1,6 +1,4 @@
 {
-  "authHost": "http://usersChat-app.service.docker",
-  "authEndpoint": "/broadcasting/auth",
   "clients": [
     {
       "appId": "08bc72d6ac0094f5",
@@ -13,15 +11,12 @@
       "port": "6379",
       "host": "redis",
       "db": 0
-    },
-    "sqlite": {
-      "databasePath": "/database/laravel-echo-server.sqlite"
     }
   },
   "devMode": true,
   "host": null,
   "port": "6001",
-  "protocol": "http",
+  "protocol": "https",
   "socketio": {},
   "sslCertPath": "",
   "sslKeyPath": ""

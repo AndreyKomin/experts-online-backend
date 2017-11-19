@@ -28,8 +28,8 @@ class MessengerAuthEvent implements ShouldBroadcast
      *
      * @return \Illuminate\Broadcasting\Channel|array
      */
-    public function broadcastOn(): Channel
+    public function broadcastOn()
     {
-        return new Channel('auth.' . $this->user->login);
+        return ['user.' . $this->user->id];
     }
 }

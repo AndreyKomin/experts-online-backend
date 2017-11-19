@@ -53,11 +53,11 @@ class LoginController extends Controller
 
         $key = $user->id . ':' . $messenger->code;
 
-        if ($this->cacheRepository->has($key)) {
-            return $this->response->array([
-                'message' => ''
-            ]);
-        }
+//        if ($this->cacheRepository->has($key)) {
+//            return $this->response->array([
+//                'message' => 'ffff'
+//            ]);
+//        }
 
         if ($token = $this->auth->fromUser($user) && $messenger) {
 
@@ -73,7 +73,9 @@ class LoginController extends Controller
 
             $this->dispatchNow(new TelegramAuth($messengerUnique));
 
-            return $this->response->noContent();
+            return $this->response->array([
+                'id' => $user->id
+            ]);
         }
 
         $this->response->errorForbidden();

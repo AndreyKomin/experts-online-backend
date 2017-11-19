@@ -42,6 +42,10 @@ class User extends Eloquent implements JWTSubject, AuthContract
 		self::RATING => 'float'
 	];
 
+    protected $with = [
+        'availableMessengers'
+    ];
+
 	protected $hidden = [
 		'remember_token'
 	];
