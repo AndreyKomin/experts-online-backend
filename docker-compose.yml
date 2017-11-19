@@ -1,0 +1,60 @@
+version: '3.4'
+services:
+
+  app:
+    image: wyveo/nginx-php-fpm
+    container_name: chat-app
+    restart: always
+    volumes:
+        - .:/home/www/app
+        - ~/.composer:/root/.composer
+        - ./docker/root/nginx/host.d:/etc/nginx/conf.d
+ 
+  db:
+    image: mysql:5.7
+    hostname: chat-db
+    container_name: chat-db
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: chat
+      MYSQL_USER: user
+      MYSQL_PASSWORD: secret
+    labels:
+      SERVICE_NAME: chat-db
+    healthcheck:
+      test: "/usr/bin/mysql --user=user --password=secret --execute \"SHOW DATABASES;\""
+      interval: 3s
+      timeout: 3s
+      retries: 10
+    networks:
+      - chat
+ 
+  redis:
+    image: redis:alpine
+    container_name: chat-redis
+    labels:
+      SERVICE_NAME: chat-redis
+    networks:
+      - chat
+
+  echo:
+    build:
+      context: ./docker
+      dockerfile: dockerfile.echo
+      args:
+          APP_ENV: local
+    image: chat-echo-server
+    expose:
+    - 6001
+    hostname: chat-echo
+    container_name: chat-echo
+    labels:
+      SERVICE_NAME: chat-echo
+    depends_on:
+      - redis
+    networks:
+      - chat
+
+networks:
+  chat:
+    driver: bridge

@@ -1,0 +1,15 @@
+FROM node:6-alpine
+EXPOSE 6001
+WORKDIR /app
+ENTRYPOINT ["laravel-echo-server"]
+CMD ["start"]
+
+RUN apk add --update --no-cache bash \
+    && apk add --update --no-cache -t .build-deps python make g++ gcc \
+    && npm i -g laravel-echo-server \
+    && apk del .build-deps
+
+ARG APP_ENV
+ENV APP_ENV=${APP_ENV:-develop}
+ADD laravel-echo-server-${APP_ENV}.json /app/
+RUN mv laravel-echo-server* laravel-echo-server.json
