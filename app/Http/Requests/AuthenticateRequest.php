@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Dingo\Api\Http\Request;
+use Illuminate\Http\Request;
 
-class PrependAuthRequest extends Request
+class AuthenticateRequest extends Request
 {
     public function rules(): array
     {

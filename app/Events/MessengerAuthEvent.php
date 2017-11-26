@@ -9,19 +9,12 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MessengerAuthEvent implements ShouldBroadcast
+class MessengerAuthEvent  implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $user;
 
-    public $decision;
-
-    public function __construct(User $user, bool $decision)
-    {
-        $this->user = $user;
-        $this->decision = $decision;
-    }
+    public $messaga = 'adgag';
 
     /**
      * Get the channels the event should broadcast on.
@@ -30,6 +23,6 @@ class MessengerAuthEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return ['user.' . $this->user->id];
+        return ['user.1'];
     }
 }

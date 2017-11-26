@@ -33,8 +33,7 @@ $api->version('v1', function (Router $api) {
         $api->delete('/auth', LoginController::class . '@logout');
         $api->put('/auth', LoginController::class . '@refreshToken');
 
-
-
-        $api->put('/users/{user}', UsersController::class . '@update');
+        $api->put('/me', UsersController::class . '@update');
+        $api->get('/me', UsersController::class . '@show');
     });
 });

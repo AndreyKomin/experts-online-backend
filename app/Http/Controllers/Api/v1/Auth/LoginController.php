@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AuthenticateRequest;
 use App\Jobs\TelegramAuth;
 use App\Models\Repositories\MessengerRepository;
 use App\Models\Repositories\UsersRepository;
@@ -44,6 +45,11 @@ class LoginController extends Controller
 
     public function authenticate(Request $request): Response
     {
+        $request->validate([
+            'login' => 'required|string|exists:users',
+            'messenger_id' => 'required|int|exists:messengers,id'
+        ]);
+
         $login = $request->get('login');
 
         /** @var User $user */
@@ -59,7 +65,7 @@ class LoginController extends Controller
 //            ]);
 //        }
 
-        if ($token = $this->auth->fromUser($user) && $messenger) {
+        if (($token = $this->auth->fromUser($user)) && $messenger) {
 
             $key = $user->id . ':' . $messenger->code;
 
@@ -69,12 +75,12 @@ class LoginController extends Controller
                 $this->response->errorForbidden();
             }
 
-            $this->cacheRepository->put($key, $token, $this->defaultExpireTime);
+            //$this->cacheRepository->put($key, $token, $this->defaultExpireTime);
 
             $this->dispatchNow(new TelegramAuth($messengerUnique));
 
             return $this->response->array([
-                'id' => $user->id
+                'token' => $token
             ]);
         }
 
