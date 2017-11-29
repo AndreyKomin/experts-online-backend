@@ -8,7 +8,7 @@ use App\Http\Requests\BotsDecisionRequest;
 use App\Models\Repositories\MessengerRepository;
 use App\Models\Repositories\UserMessengerRepository;
 use App\Models\User;
-use App\Services\UserService;
+use App\Services\UserServiceManager;
 use App\Transformers\BaseTransformer;
 
 use Dingo\Api\Http\Response;
@@ -28,7 +28,7 @@ class BotController extends Controller
     public function __construct(
         MessengerRepository $messengerRepository,
         UserMessengerRepository $userMessengerRepository,
-        UserService $userService
+        UserServiceManager $userService
     ) {
         $this->messengerRepository = $messengerRepository;
         $this->userMessengerRepository = $userMessengerRepository;

@@ -27,12 +27,13 @@ class UserMessenger extends Eloquent
 
 	protected $casts = [
 		'user_id' => 'int',
-		'messenger_id' => 'int'
+		'messenger_id' => 'int',
 	];
 
 	protected $fillable = [
 		'user_id',
-		'messenger_id'
+		'messenger_id',
+        'messenger_unique_id'
 	];
 
 	public function messenger(): BelongsTo

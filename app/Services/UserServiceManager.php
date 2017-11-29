@@ -8,19 +8,13 @@ use Illuminate\Database\ConnectionInterface;
 use App\Models\Messenger;
 use Illuminate\Validation\Factory;
 
-class UserService extends BaseService
+class UserServiceManager extends ServiceManager
 {
     protected $repository;
 
     protected $userMessengersService;
 
-    protected static $registerRules = [
-        User::LOGIN => 'required|string',
-        User::FIRST_NAME => 'string|max:255',
-        User::LAST_NAME => 'string|max:255',
-    ];
-
-    protected static $updateRules = [
+    protected static $validationRules = [
         User::LOGIN => 'required|string',
         User::FIRST_NAME => 'string|max:255',
         User::LAST_NAME => 'string|max:255',
@@ -31,7 +25,7 @@ class UserService extends BaseService
         UsersRepository $repository,
         Factory $validationFactory,
         ConnectionInterface $connection,
-        UserMessengersService $userMessengersService
+        UserMessengersServiceManager $userMessengersService
     ) {
         $this->repository = $repository;
         $this->userMessengersService = $userMessengersService;

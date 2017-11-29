@@ -10,7 +10,7 @@ use Illuminate\Database\ConnectionInterface;
 use Illuminate\Validation\Factory;
 use App\Models\Messenger;
 
-class UserMessengersService extends BaseService
+class UserMessengersServiceManager extends ServiceManager
 {
     protected $repository;
 
