@@ -43,7 +43,6 @@ class AuthController extends Controller
     {
         $request->validate([
             'provider' => 'required|string|exists:messengers,code',
-            'clientId' => 'required|string|exists:user_messengers,messenger_unique_id',
             'messenger_unique' => 'string',
             'code' => 'string',
         ]);

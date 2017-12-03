@@ -35,22 +35,22 @@ class UserServiceManager extends ServiceManager
                 Messenger::CODE => $data['provider']
             ])->first();
 
+            $serviceData = $this->serviceFactory->getDriver($messenger->code)->sendAuth($data['code']);
+
             $userMessenger = $this->repositoryFactory->getRepository(UserMessenger::class)->getWhere([
-                UserMessenger::UNIQUE => $data['clientId'],
+                UserMessenger::UNIQUE => $serviceData['id'],
                 UserMessenger::MESSENGER_ID => $messenger->id
             ])->first();
             /** @var User $user */
             if (!$userMessenger) {
                 $data['messengers'][] = [
-                    'messenger_unique_id' => $data['clientId'],
+                    'messenger_unique_id' => $serviceData['id'],
                     'messenger_id' => $messenger->id
                 ];
                 $user = $this->create($data);
             } else {
                 $user = $this->repositoryFactory->getRepository(User::class)->find($userMessenger->user_id);
             }
-
-            $this->serviceFactory->getDriver($messenger->code)->sendAuth($data['code']);
             return $user;
         });
     }

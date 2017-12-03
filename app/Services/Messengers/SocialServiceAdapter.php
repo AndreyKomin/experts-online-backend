@@ -15,7 +15,7 @@ class SocialServiceAdapter implements IMessengerService
         $this->driver = $driver;
     }
 
-    public function sendAuth(string $code): void
+    public function sendAuth(string $code): array
     {
         $driverClass = 'App\\Services\\Messengers\Socials\\' . ucfirst($this->driver) . 'Driver';
 
