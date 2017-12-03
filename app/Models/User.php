@@ -85,4 +85,13 @@ class User extends Eloquent implements JWTSubject, AuthContract
             ->first();
         return $userMessenger->messenger_unique_id;
     }
+
+    public static function rules(): array
+    {
+        return [
+            User::LOGIN => 'required|string|unique:users',
+            User::FIRST_NAME => 'string|max:255',
+            User::LAST_NAME => 'string|max:255',
+        ];
+    }
 }

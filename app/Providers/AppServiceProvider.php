@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Contracts\IMessengerServiceFactory;
 use App\Contracts\IRepository;
 use App\Contracts\IRepositoryFactory;
 use App\Contracts\IServiceManager;
@@ -11,7 +12,9 @@ use App\Http\Controllers\Api\v1\UsersController;
 use App\Models\Repositories\UsersRepository;
 use App\Models\User;
 use App\Repositories\RepositoryFactory;
+use App\Services\Messengers\Socials\FacebookDriver;
 use App\Services\ServiceManager;
+use App\Services\UserServiceManager;
 use App\Transformers\BaseTransformer;
 use Dingo\Api\Exception\ValidationHttpException;
 use GuzzleHttp\Client;
@@ -22,6 +25,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Factory;
 use Illuminate\Validation\ValidationException;
 use Reliese\Coders\CodersServiceProvider;
+use App\Messengers\Services\Factory as MessengerFactory;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -57,16 +61,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(IRepositoryFactory::class, RepositoryFactory::class);
 
-        $this->app->when(AuthController::class)->needs(IServiceManager::class)->give(function (Application $application
-        ) {
-            return new ServiceManager(
-                User::class,
-                $application->make(IRepositoryFactory::class),
-                $application->make(Factory::class),
-                $application->make(ConnectionInterface::class)
-            );
+        $this->app->when(AuthController::class)->needs(IServiceManager::class)->give(UserServiceManager::class);
+        $this->app->singleton(IMessengerServiceFactory::class, MessengerFactory::class);
+        $this->app->bind(FacebookDriver::class, function(Application $application) {
+            return new FacebookDriver($application->make(ClientInterface::class), config('services.socials.facebook'));
         });
-
-
     }
 }

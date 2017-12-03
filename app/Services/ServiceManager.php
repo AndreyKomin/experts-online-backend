@@ -23,7 +23,6 @@ class ServiceManager implements IServiceManager
     protected static $validationRules = [];
 
     public function __construct(
-        string $className,
         IRepositoryFactory $repositoryFactory,
         Factory $validationFactory,
         ConnectionInterface $connection
@@ -31,7 +30,6 @@ class ServiceManager implements IServiceManager
         $this->validationFactory = $validationFactory;
         $this->connection = $connection;
         $this->repositoryFactory = $repositoryFactory;
-        $this->className = $className;
     }
 
     protected function validate(array $data, array $rules, array $messages = []): void
@@ -68,5 +66,10 @@ class ServiceManager implements IServiceManager
     public function delete(Model $model): void
     {
         $this->repositoryFactory->getRepository($this->className)->delete($model);
+    }
+
+    protected function getValidationRules(): array
+    {
+        return [];
     }
 }

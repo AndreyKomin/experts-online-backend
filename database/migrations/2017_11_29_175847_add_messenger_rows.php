@@ -14,15 +14,21 @@ class AddMessengerRows extends Migration
     {
         Messenger::query()->create([
             'name' => 'Vk',
-            'code' => 'vk'
+            'code' => 'vk',
+            'canUseForMessage' => 0,
+            'canUseForAuth' => 1,
         ]);
         Messenger::query()->create([
             'name' => 'Facebook',
-            'code' => 'facebook'
+            'code' => 'facebook',
+            'canUseForMessage' => 0,
+            'canUseForAuth' => 1,
         ]);
         Messenger::query()->create([
             'name' => 'Goggle+',
-            'code' => 'google'
+            'code' => 'google',
+            'canUseForMessage' => 0,
+            'canUseForAuth' => 1,
         ]);
     }
 

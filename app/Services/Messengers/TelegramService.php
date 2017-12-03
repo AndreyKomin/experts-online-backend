@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Services;
+namespace App\Messengers\Services;
 
+use App\Contracts\IMessengerService;
+use App\Models\User;
 use GuzzleHttp\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class TelegramService
+class TelegramService implements IMessengerService
 {
     protected $client;
 
@@ -21,10 +23,10 @@ class TelegramService
         $this->client = $client;
     }
 
-    public function sendAuth(string $uniqueId): void
+    public function sendAuth(User $user, array $options = []): void
     {
         $this->request('POST', 'auth', [
-            'json' => ['chatId' => $uniqueId],
+            'json' => ['chatId' => $options['code']],
             'headers' => static::$defaultHeaders,
         ]);
     }

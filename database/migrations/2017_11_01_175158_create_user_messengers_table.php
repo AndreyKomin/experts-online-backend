@@ -19,6 +19,7 @@ class CreateUserMessengersTable extends Migration
             $table->string('messenger_unique_id');
             $table->timestamps();
             $table->unique(['user_id', 'messenger_id']);
+            $table->tinyInteger('isDefault')->default(0);
         });
     }
 

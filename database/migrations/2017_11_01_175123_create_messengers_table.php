@@ -17,6 +17,8 @@ class CreateMessengersTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('code')->unique();
+            $table->tinyInteger('canUseForMessage')->default(0);
+            $table->tinyInteger('canUseForAuth')->default(0);
         });
     }
 

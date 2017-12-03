@@ -45,4 +45,14 @@ class UserMessenger extends Eloquent
 	{
 		return $this->belongsTo(\App\Models\User::class);
 	}
+
+	public static function rules(): array
+    {
+        return [
+            'messenger_unique_id' => 'required|string|unique:user_messengers,messenger_unique_id',
+            'user_id' => 'required|int|exists:users,id',
+            'messenger_id' => 'required|int|exists:messengers,id',
+        ];
+    }
+
 }

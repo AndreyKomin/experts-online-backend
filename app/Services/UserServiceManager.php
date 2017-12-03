@@ -2,62 +2,101 @@
 
 namespace App\Services;
 
-use App\Models\Repositories\UsersRepository;
-use App\Models\User;
-use Illuminate\Database\ConnectionInterface;
+use App\Contracts\IMessengerServiceFactory;
 use App\Models\Messenger;
+use App\Models\User;
+use App\Models\UserMessenger;
+use Illuminate\Database\Eloquent\Model;
+use App\Contracts\IRepositoryFactory;
+use App\Contracts\IServiceManager;
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Validation\Factory;
 
 class UserServiceManager extends ServiceManager
 {
-    protected $repository;
+    protected $className = User::class;
 
-    protected $userMessengersService;
-
-    protected static $validationRules = [
-        User::LOGIN => 'required|string',
-        User::FIRST_NAME => 'string|max:255',
-        User::LAST_NAME => 'string|max:255',
-    ];
-
+    protected $serviceFactory;
 
     public function __construct(
-        UsersRepository $repository,
+        IRepositoryFactory $repositoryFactory,
         Factory $validationFactory,
         ConnectionInterface $connection,
-        UserMessengersServiceManager $userMessengersService
+        IMessengerServiceFactory $serviceFactory
     ) {
-        $this->repository = $repository;
-        $this->userMessengersService = $userMessengersService;
-        parent::__construct($validationFactory, $connection);
+        $this->serviceFactory = $serviceFactory;
+        parent::__construct($repositoryFactory, $validationFactory, $connection);
     }
 
-    public function create(array $fields): User
+    public function authenticate(array $data): User
     {
-        $this->validate($fields, static::$registerRules);
-        /** @var User $user */
-        $user = $this->repository->save((new User($fields)));
-        return $user;
-    }
+        return $this->transaction(function () use ($data) {
+            $messenger = $this->repositoryFactory->getRepository(Messenger::class)->getWhere([
+                Messenger::CODE => $data['provider']
+            ])->first();
 
-    public function save(User $user, array $fields): void
-    {
-        $this->validate($fields, static::$updateRules);
-        $user->fill($fields);
-        $this->repository->save($user);
-    }
+            $userMessenger = $this->repositoryFactory->getRepository(UserMessenger::class)->getWhere([
+                UserMessenger::UNIQUE => $data['clientId'],
+                UserMessenger::MESSENGER_ID => $messenger->id
+            ])->first();
+            /** @var User $user */
+            if (!$userMessenger) {
+                $data['messengers'][] = [
+                    'messenger_unique_id' => $data['clientId'],
+                    'messenger_id' => $messenger->id
+                ];
+                $user = $this->create($data);
+            } else {
+                $user = $this->repositoryFactory->getRepository(User::class)->find($userMessenger->user_id);
+            }
 
-    public function delete(User $user): void
-    {
-        $this->repository->delete($user);
-    }
-
-    public function createUserWithMessenger(array $userFields, Messenger $messenger, string $unique): User
-    {
-        return $this->transaction(function () use ($userFields, $messenger, $unique) {
-            $user = $this->create($userFields);
-            $this->userMessengersService->create($user, $messenger, $unique);
+            $this->serviceFactory->getDriver($messenger->code)->sendAuth($data['code']);
             return $user;
         });
+    }
+
+    public function create(array $data): Model
+    {
+       return $this->transaction(function () use ($data) {
+           $data['login'] = $data['login'] ?? $this->generateLogin();
+           $user = parent::create($data);
+           foreach ($data['messengers'] as $messenger) {
+                $messenger['user_id'] = $user->id;
+                $this->validate($messenger, UserMessenger::rules());
+                $this->repositoryFactory->getRepository(UserMessenger::class)->save(new UserMessenger($messenger));
+           }
+           return $user;
+       });
+    }
+
+    public function update(Model $model, array $data): Model
+    {
+        return $this->transaction(function () use ($model, $data) {
+            $user = parent::update($model, $data);
+            foreach ($data['messengers'] as $messenger) {
+                $messenger['user_id'] = $user->id;
+                $this->validate($messenger, UserMessenger::rules());
+                $this->repositoryFactory->getRepository(UserMessenger::class)->save(new UserMessenger($messenger));
+            }
+            return $user;
+        });
+    }
+
+    public function delete(Model $model): void
+    {
+        $this->transaction(function () use ($model) {
+            parent::delete($model);
+        });
+    }
+
+    protected function getValidationRules(): array
+    {
+        return User::rules();
+    }
+
+    protected function generateLogin(): string
+    {
+        $id = $this->repositoryFactory->getRepository(User::class)->getQuery()->pluck('id')->last();
+        return "id$id";
     }
 }
