@@ -30,6 +30,12 @@ class AddMessengerRows extends Migration
             'canUseForMessage' => 0,
             'canUseForAuth' => 1,
         ]);
+        Messenger::query()->create([
+            'name' => 'Telegram',
+            'code' => 'telegram',
+            'canUseForMessage' => 1,
+            'canUseForAuth' => 1,
+        ]);
     }
 
     /**

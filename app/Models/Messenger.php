@@ -19,12 +19,16 @@ class Messenger extends Eloquent
 {
 	const NAME = 'name';
 	const CODE = 'code';
+	const CAN_USE_FOR_MESSAGE = 'canUseForMessage';
+    const CAN_USE_FOR_AUTH = 'canUseForAuth';
 
     public $timestamps = false;
 
 	protected $fillable = [
 		self::NAME,
 		self::CODE,
+        self::CAN_USE_FOR_MESSAGE,
+        self::CAN_USE_FOR_AUTH,
 	];
 
 	public function users(): BelongsToMany

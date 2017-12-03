@@ -73,10 +73,12 @@ class UserServiceManager extends ServiceManager
     {
         return $this->transaction(function () use ($model, $data) {
             $user = parent::update($model, $data);
-            foreach ($data['messengers'] as $messenger) {
-                $messenger['user_id'] = $user->id;
-                $this->validate($messenger, UserMessenger::rules());
-                $this->repositoryFactory->getRepository(UserMessenger::class)->save(new UserMessenger($messenger));
+            if (isset($data['messengers']) && is_array($data['messengers'])) {
+                foreach ($data['messengers'] as $messenger) {
+                    $messenger['user_id'] = $user->id;
+                    $this->validate($messenger, UserMessenger::rules());
+                    $this->repositoryFactory->getRepository(UserMessenger::class)->save(new UserMessenger($messenger));
+                }
             }
             return $user;
         });
@@ -97,6 +99,7 @@ class UserServiceManager extends ServiceManager
     protected function generateLogin(): string
     {
         $id = $this->repositoryFactory->getRepository(User::class)->getQuery()->pluck('id')->last();
+        $id = (int)$id + 1;
         return "id$id";
     }
 }
