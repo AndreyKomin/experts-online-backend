@@ -25,6 +25,7 @@ class SocialServiceAdapter implements IMessengerService
 
         /** @var ISocialDriver $driver */
         $driver = app($driverClass);
-        $driver->getToken($code);
+        $token = $driver->getToken($code);
+        return $driver->getInfo($token['access_token']);
     }
 }
