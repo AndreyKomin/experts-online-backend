@@ -39,7 +39,9 @@ class User extends Eloquent implements JWTSubject, AuthContract
 	protected $table = 'users';
 
     protected $casts = [
-		self::RATING => 'float'
+		self::RATING => 'float',
+        'isExpert' => 'bool',
+        'directInvite' => 'bool',
 	];
 
     protected $with = [
@@ -54,6 +56,11 @@ class User extends Eloquent implements JWTSubject, AuthContract
 		'first_name',
 		'last_name',
 		'login',
+        'avatar',
+        'portfolio',
+        'price',
+        'isExpert',
+        'directInvite',
 	];
 
 	public function availableMessengers(): HasMany
@@ -74,24 +81,5 @@ class User extends Eloquent implements JWTSubject, AuthContract
     public function getJWTCustomClaims(): array
     {
         return [];
-    }
-
-    public function getMessengerUnique(int $messenger_id): ?string
-    {
-        /** @var UserMessenger $userMessenger */
-        $userMessenger = UserMessenger::query()
-            ->where('user_id', '=', $this->id)
-            ->where('messenger_id','=',$messenger_id)
-            ->first();
-        return $userMessenger->messenger_unique_id;
-    }
-
-    public static function rules(): array
-    {
-        return [
-            User::LOGIN => 'required|string|unique:users',
-            User::FIRST_NAME => 'string|max:255',
-            User::LAST_NAME => 'string|max:255',
-        ];
     }
 }

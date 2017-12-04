@@ -72,11 +72,6 @@ class AuthController extends Controller
 
     public function update(Request $request): Response
     {
-        $request->validate([
-            'login' => 'string|unique:users',
-            'first_name' => 'string',
-            'last_name' => 'string',
-        ]);
         $this->serviceManager->update($this->user, $request->toArray());
         return $this->response->noContent();
     }

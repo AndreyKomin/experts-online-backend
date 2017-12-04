@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -24,6 +25,7 @@ class UserMessenger extends Eloquent
 	const UNIQUE = 'messenger_unique_id';
 
     public $incrementing = false;
+    protected $primaryKey = ['user_id', 'messenger_id'];
 
 	protected $casts = [
 		'user_id' => 'int',
@@ -33,7 +35,7 @@ class UserMessenger extends Eloquent
 	protected $fillable = [
 		'user_id',
 		'messenger_id',
-        'messenger_unique_id'
+        'messenger_unique_id',
 	];
 
 	public function messenger(): BelongsTo
@@ -49,10 +51,48 @@ class UserMessenger extends Eloquent
 	public static function rules(): array
     {
         return [
-            'messenger_unique_id' => 'required|string|unique:user_messengers,messenger_unique_id',
+            'messenger_unique_id' => 'required|string',
             'user_id' => 'required|int|exists:users,id',
             'messenger_id' => 'required|int|exists:messengers,id',
         ];
     }
 
+    /**
+     * Set the keys for a save update query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function setKeysForSaveQuery(Builder $query)
+    {
+        $keys = $this->getKeyName();
+        if(!is_array($keys)){
+            return parent::setKeysForSaveQuery($query);
+        }
+
+        foreach($keys as $keyName){
+            $query->where($keyName, '=', $this->getKeyForSaveQuery($keyName));
+        }
+
+        return $query;
+    }
+
+    /**
+     * Get the primary key value for a save query.
+     *
+     * @param mixed $keyName
+     * @return mixed
+     */
+    protected function getKeyForSaveQuery($keyName = null)
+    {
+        if(is_null($keyName)){
+            $keyName = $this->getKeyName();
+        }
+
+        if (isset($this->original[$keyName])) {
+            return $this->original[$keyName];
+        }
+
+        return $this->getAttribute($keyName);
+    }
 }

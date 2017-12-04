@@ -20,7 +20,9 @@ class ServiceManager implements IServiceManager
 
     protected $className;
 
-    protected static $validationRules = [];
+    protected $updateRules = [];
+
+    protected $creationRules = [];
 
     public function __construct(
         IRepositoryFactory $repositoryFactory,
@@ -52,13 +54,13 @@ class ServiceManager implements IServiceManager
 
     public function create(array $data): Model
     {
-        $this->validate($data, static::$validationRules);
+        $this->validate($data, $this->creationRules);
         return $this->repositoryFactory->getRepository($this->className)->save((new $this->className($data)));
     }
 
     public function update(Model $model, array $data): Model
     {
-        $this->validate($data, static::$validationRules);
+        $this->validate($data, $this->updateRules);
         $model->fill($data);
         return $this->repositoryFactory->getRepository($this->className)->save($model);
     }

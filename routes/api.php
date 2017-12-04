@@ -22,7 +22,7 @@ $api->version('v1', function (Router $api) {
     $api->get('/users', UsersController::class . '@index');
     $api->post('/auth', AuthController::class . '@authenticate');
     $api->get('/messengers', MessengersController::class . '@index');
-
+    $api->get('/search', UsersController::class . '@search');
     $api->group(['middleware' => 'api.auth'], function (Router $api) {
         $api->delete('/auth', AuthController::class . '@logout');
         $api->put('/auth', AuthController::class . '@refreshToken');
