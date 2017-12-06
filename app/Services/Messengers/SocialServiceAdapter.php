@@ -3,6 +3,7 @@
 namespace App\Messengers\Services;
 
 use App\Contracts\IMessengerService;
+use App\Contracts\IMessengerUser;
 use App\Contracts\ISocialDriver;
 use App\Models\User;
 
@@ -15,7 +16,7 @@ class SocialServiceAdapter implements IMessengerService
         $this->driver = $driver;
     }
 
-    public function sendAuth(string $code): array
+    public function sendAuth(string $code): IMessengerUser
     {
         $driverClass = 'App\\Services\\Messengers\Socials\\' . ucfirst($this->driver) . 'Driver';
 
@@ -25,7 +26,6 @@ class SocialServiceAdapter implements IMessengerService
 
         /** @var ISocialDriver $driver */
         $driver = app($driverClass);
-        $token = $driver->getToken($code);
-        return $driver->getInfo($token['access_token']);
+        return $driver->getInfo($driver->getToken($code));
     }
 }

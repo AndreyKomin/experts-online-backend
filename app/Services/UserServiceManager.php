@@ -47,19 +47,24 @@ class UserServiceManager extends ServiceManager
                 Messenger::CODE => $data['provider']
             ])->first();
 
-            $serviceData = $this->serviceFactory->getDriver($messenger->code)->sendAuth($data['code']);
+            $socialUser = $this->serviceFactory->getDriver($messenger->code)->sendAuth($data['code']);
 
             $userMessenger = $this->repositoryFactory->getRepository(UserMessenger::class)->getWhere([
-                UserMessenger::UNIQUE => $serviceData['id'],
+                UserMessenger::UNIQUE => $socialUser->getProperty('id'),
                 UserMessenger::MESSENGER_ID => $messenger->id
             ])->first();
 
             /** @var User $user */
             if (!$userMessenger) {
                 $data['messengers'][] = [
-                    'messenger_unique_id' => $serviceData['id'],
+                    'messenger_unique_id' => $socialUser->getProperty('id'),
                     'messenger_id' => $messenger->id
                 ];
+                $names = explode(' ', $socialUser->getProperty('name')) ?? null;
+                if ($names) {
+                    $data[User::FIRST_NAME] = $names[0];
+                    $data[User::LAST_NAME] = $names[1];
+                }
                 $user = $this->create($data);
             } else {
                 $user = $this->repositoryFactory->getRepository(User::class)->find($userMessenger->user_id);
@@ -119,7 +124,10 @@ class UserServiceManager extends ServiceManager
 
     protected function generateLogin(): string
     {
-        $id = $this->repositoryFactory->getRepository(User::class)->getQuery()->pluck('id')->last();
+        $id = $this->repositoryFactory->getRepository(User::class)->getQuery()
+            ->orderBy('id')
+            ->pluck('id')
+            ->last();
         $id = (int)$id + 1;
         return "id$id";
     }

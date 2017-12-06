@@ -2,26 +2,22 @@
 
 namespace App\Services\Messengers\Socials;
 
+
 use App\Services\Messengers\Dto\SocialUser;
 use App\Services\Messengers\Dto\Token;
 use GuzzleHttp\ClientInterface;
 
-class FacebookDriver extends AbstractDriver
+class GoogleDriver extends AbstractDriver
 {
-
-    protected $graphUrl = 'https://graph.facebook.com';
-
-    protected $version = 'v2.11';
-
-    protected $fields = ['name', 'email', 'gender', 'verified', 'link'];
-
-    protected $scopes = ['email'];
-
     protected $clientSecret;
 
     protected $clientId;
 
     protected $redirectUrl;
+
+    protected $tokenUrl = 'https://accounts.google.com/o/oauth2/token';
+
+    protected $meUrl = 'https://www.googleapis.com/plus/v1/people/me?';
 
     public function __construct(ClientInterface $client, array $config)
     {
@@ -33,13 +29,16 @@ class FacebookDriver extends AbstractDriver
 
     public function getToken(string $code): Token
     {
-        $response = $this->request('POST', $this->graphUrl . '/' . $this->version . '/oauth/access_token', [
+
+        $response = $this->request('POST', $this->tokenUrl, [
             'json' => [
                 'client_id' => $this->clientId,
                 'client_secret' => $this->clientSecret,
                 'code' => $code,
                 'redirect_uri' => $this->redirectUrl,
-            ]
+                'grant_type' => 'authorization_code',
+            ],
+            'headers' => ['Accept' => 'application/json']
         ]);
 
         $tokenResponse = json_decode($response->getBody(), true);
@@ -50,16 +49,14 @@ class FacebookDriver extends AbstractDriver
 
     public function getInfo(Token $token): SocialUser
     {
-        $url = $this->graphUrl.'/'.$this->version.'/me?access_token='.$token->token.'&fields='.implode(',', $this->fields);
 
-        if (! empty($this->clientSecret)) {
-            $appSecretProof = hash_hmac('sha256', $token, $this->clientSecret);
-            $url .= '&appsecret_proof='.$appSecretProof;
-        }
-
-        $response = $this->request('GET', $url, [
+        $response = $this->request('GET', $this->meUrl, [
+            'query' => [
+                'prettyPrint' => 'false',
+            ],
             'headers' => [
                 'Accept' => 'application/json',
+                'Authorization' => 'Bearer '.$token->token,
             ],
         ]);
 
