@@ -53,7 +53,7 @@ class FacebookDriver extends AbstractDriver
         $url = $this->graphUrl.'/'.$this->version.'/me?access_token='.$token->token.'&fields='.implode(',', $this->fields);
 
         if (! empty($this->clientSecret)) {
-            $appSecretProof = hash_hmac('sha256', $token, $this->clientSecret);
+            $appSecretProof = hash_hmac('sha256', $token->token, $this->clientSecret);
             $url .= '&appsecret_proof='.$appSecretProof;
         }
 
