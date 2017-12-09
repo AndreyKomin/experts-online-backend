@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * 
- * @property Collection $availableMessengers
+ * @property Collection $messengers
  * @property Collection $tags
  */
 class User extends Eloquent implements JWTSubject, AuthContract
@@ -45,7 +45,7 @@ class User extends Eloquent implements JWTSubject, AuthContract
 	];
 
     protected $with = [
-        'availableMessengers'
+        'messengers'
     ];
 
 	protected $hidden = [
@@ -63,7 +63,7 @@ class User extends Eloquent implements JWTSubject, AuthContract
         'directInvite',
 	];
 
-	public function availableMessengers(): HasMany
+	public function messengers(): HasMany
 	{
 		return $this->hasMany(UserMessenger::class);
 	}

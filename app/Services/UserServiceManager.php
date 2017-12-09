@@ -94,9 +94,9 @@ class UserServiceManager extends ServiceManager
             /** @var User $user */
             $user = parent::update($model, $data);
             $collection = new Collection();
-            if (isset($data['available_messengers']) && is_array($data['available_messengers'])) {
-                $user->availableMessengers()->delete();
-                foreach ($data['available_messengers'] as $messenger) {
+            if (isset($data['messengers']) && is_array($data['messengers'])) {
+                $user->messengers()->delete();
+                foreach ($data['messengers'] as $messenger) {
                     $userMessenger = $this->repositoryFactory->getRepository(UserMessenger::class)
                         ->getWhere([
                             'user_id' => $user->id,
@@ -108,7 +108,7 @@ class UserServiceManager extends ServiceManager
                     $collection->push($userMessenger);
                 }
             }
-            $user->availableMessengers()->saveMany($collection);
+            $user->messengers()->saveMany($collection);
             return $user;
         });
     }
