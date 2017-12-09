@@ -14,7 +14,7 @@ class UpdateUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->text('avatar')->nullable();
+            $table->mediumText('avatar')->nullable();
             $table->text('portfolio')->nullable();
             $table->integer('price')->nullable();
             $table->tinyInteger('isExpert')->default(0);

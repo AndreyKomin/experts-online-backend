@@ -38,7 +38,7 @@ return [
         'facebook' => [
             'clientId' => '1758040850935285',
             'clientSecret' => '60232ca1f8860f9ce9c7f5b52a53ff55',
-            'redirectUrl' => ''
+            'redirectUrl' => 'http://0.0.0.0:8080/'
         ],
         'vk' => [
             'clientId' => '620b4868620b4868620b4868b9624cd8666620b620b4868382f566a534439527a7449ca',
