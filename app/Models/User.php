@@ -61,6 +61,8 @@ class User extends Eloquent implements JWTSubject, AuthContract
         'price',
         'isExpert',
         'directInvite',
+        'paymentType',
+        'paymentInfo',
 	];
 
 	public function messengers(): HasMany

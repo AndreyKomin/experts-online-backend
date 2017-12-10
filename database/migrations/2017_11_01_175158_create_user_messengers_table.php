@@ -17,6 +17,7 @@ class CreateUserMessengersTable extends Migration
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('messenger_id');
             $table->string('messenger_unique_id');
+            $table->string('profile_link')->nullable()->default(null);
             $table->timestamps();
             $table->unique(['user_id', 'messenger_id']);
             $table->tinyInteger('isDefault')->default(0);

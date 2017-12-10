@@ -36,6 +36,7 @@ class UserMessenger extends Eloquent
 		'user_id',
 		'messenger_id',
         'messenger_unique_id',
+        'profile_link',
 	];
 
 	public function messenger(): BelongsTo
