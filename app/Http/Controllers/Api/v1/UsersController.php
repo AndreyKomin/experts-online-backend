@@ -33,12 +33,6 @@ class UsersController extends Controller
         return $this->response->collection($this->repositoryFactory->get(), new BaseTransformer());
     }
 
-    public function update(int $id, Request $request): Response
-    {
-        $this->serviceManager->update(User::query()->find($id), $request->toArray());
-        return $this->response->noContent();
-    }
-
     public function search(Request $request): Response
     {
         return $this->response->collection(
@@ -47,6 +41,10 @@ class UsersController extends Controller
             ->get(),
             new BaseTransformer()
         );
+    }
 
+    public function show(User $user): Response
+    {
+        return $this->response->item($user, new BaseTransformer());
     }
 }
