@@ -19,6 +19,7 @@ class UpdateUsersTable extends Migration
             $table->integer('price')->nullable();
             $table->tinyInteger('isExpert')->default(0);
             $table->tinyInteger('directInvite')->default(0);
+            $table->tinyInteger('wantEarn')->default(0);
             $table->tinyInteger('paymentType')->default(0);
             $table->string('paymentInfo')->nullable()->default(null);
         });
