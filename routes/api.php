@@ -18,8 +18,9 @@ use App\Http\Controllers\Api\v1\MessengersController;
 /** @var Router $api */
 $api = app(Router::class);
 
-$api->version('v1', function (Router $api) {
+$api->version('v1', ['middleware' => 'bindings'], function (Router $api) {
     $api->get('/users', UsersController::class . '@index');
+    $api->get('/users/{user}', UsersController::class . '@show');
     $api->post('/auth', AuthController::class . '@authenticate');
     $api->get('/messengers', MessengersController::class . '@index');
     $api->get('/search', UsersController::class . '@search');

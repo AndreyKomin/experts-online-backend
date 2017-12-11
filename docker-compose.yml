@@ -41,24 +41,6 @@ services:
     networks:
       - chat
 
-  echo:
-    build:
-      context: ./docker
-      dockerfile: dockerfile.echo
-      args:
-          APP_ENV: local
-    image: chat-echo-server
-    hostname: chat-echo
-    container_name: chat-echo
-    labels:
-      SERVICE_NAME: chat-echo
-    depends_on:
-      - redis
-    ports:
-      - 0.0.0.0:6001:6001/tcp
-    networks:
-      - chat
-
 networks:
   chat:
     driver: bridge
