@@ -6,6 +6,7 @@ php artisan migrate
 ```
 
 ```
+php artisan config:clear
 php artisan cache:clear
 php artisan api:routes
 php artisan api:cache
