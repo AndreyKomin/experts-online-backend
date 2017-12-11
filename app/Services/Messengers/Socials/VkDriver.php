@@ -2,12 +2,11 @@
 
 namespace App\Services\Messengers\Socials;
 
-
 use App\Services\Messengers\Dto\SocialUser;
 use App\Services\Messengers\Dto\Token;
 use GuzzleHttp\ClientInterface;
 
-class GoogleDriver extends AbstractDriver
+class VkDriver extends AbstractDriver
 {
     protected $clientSecret;
 
@@ -15,9 +14,9 @@ class GoogleDriver extends AbstractDriver
 
     protected $redirectUrl;
 
-    protected $tokenUrl = 'https://accounts.google.com/o/oauth2/token';
+    protected $tokenUrl = 'https://oauth.vk.com/access_token';
 
-    protected $meUrl = 'https://www.googleapis.com/plus/v1/people/me';
+    protected $meUrl = 'https://api.vk.com/method/users.get';
 
     public function __construct(ClientInterface $client, array $config)
     {
@@ -36,7 +35,6 @@ class GoogleDriver extends AbstractDriver
                 'client_secret' => $this->clientSecret,
                 'code' => $code,
                 'redirect_uri' => $this->redirectUrl,
-                'grant_type' => 'authorization_code',
             ],
             'headers' => ['Accept' => 'application/json']
         ]);
@@ -51,13 +49,13 @@ class GoogleDriver extends AbstractDriver
     {
 
         $response = $this->request('GET', $this->meUrl, [
-            'query' => [
-                'prettyPrint' => 'false',
-            ],
             'headers' => [
                 'Accept' => 'application/json',
-                'Authorization' => 'Bearer '.$token->token,
+                'Authorization' => 'Bearer '. $token->token,
             ],
+            'query' => [
+                'access_token' => $token->token,
+            ]
         ]);
 
         return new SocialUser(json_decode($response->getBody(), true));

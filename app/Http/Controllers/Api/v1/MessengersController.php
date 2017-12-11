@@ -22,9 +22,13 @@ class MessengersController extends Controller
 
     public function index(): Response
     {
-        return $this->response->collection(
-            $this->repositoryFactory->getRepository(Messenger::class)->get(),
-            new BaseTransformer()
+        return $this->response->array(
+            $this->repositoryFactory->getRepository(Messenger::class)
+                ->get()
+                ->mapWithKeys(function(Messenger $messenger) {
+                    return [$messenger->code => $messenger];
+                })
+                ->toArray()
         );
     }
 }
