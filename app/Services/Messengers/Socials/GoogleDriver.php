@@ -17,7 +17,7 @@ class GoogleDriver extends AbstractDriver
 
     protected $tokenUrl = 'https://accounts.google.com/o/oauth2/token';
 
-    protected $meUrl = 'https://www.googleapis.com/plus/v1/people/me';
+    protected $meUrl = 'https://www.googleapis.com/plus/v1/people/me?';
 
     public function __construct(ClientInterface $client, array $config)
     {
@@ -29,14 +29,15 @@ class GoogleDriver extends AbstractDriver
 
     public function getToken(string $code): Token
     {
-        $url = $this->tokenUrl . '?' . 'client_id=' . $this->clientId . '&client_secret='
-            . $this->clientSecret . '&redirect_uri=' . $this->redirectUrl . '&code='. $code;
-
-        $response = $this->request('POST',$url, [
-            'headers' => [
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
+        $response = $this->request('POST', $this->tokenUrl, [
+            'form_params' => [
+                'client_id' => $this->clientId,
+                'client_secret' => $this->clientSecret,
+                'code' => $code,
+                'redirect_uri' => $this->redirectUrl,
+                'grant_type' => 'authorization_code',
             ],
+            'headers' => ['Accept' => 'application/json']
         ]);
 
         $tokenResponse = json_decode($response->getBody(), true);
@@ -47,17 +48,20 @@ class GoogleDriver extends AbstractDriver
 
     public function getInfo(Token $token): SocialUser
     {
-
         $response = $this->request('GET', $this->meUrl, [
             'query' => [
                 'prettyPrint' => 'false',
             ],
             'headers' => [
                 'Accept' => 'application/json',
-                'Authorization' => 'Bearer '.$token->token,
+                'Authorization' => 'Bearer '. $token->token,
             ],
         ]);
+        $data = json_decode($response->getBody(), true);
 
-        return new SocialUser(json_decode($response->getBody(), true));
+        return new SocialUser([
+            'id' => (string)$data['id'],
+            'name' => $data['displayName'],
+        ]);
     }
 }
