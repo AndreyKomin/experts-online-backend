@@ -6,6 +6,7 @@ use App\Contracts\IRepositoryFactory;
 use App\Http\Controllers\Controller;
 use App\Services\UserServiceManager;
 use App\Transformers\BaseTransformer;
+use App\Transformers\UserMeTransformer;
 use Dingo\Api\Http\Response;
 use Dingo\Api\Routing\Helpers;
 use Illuminate\Auth\AuthenticationException;
@@ -78,7 +79,7 @@ class AuthController extends Controller
 
     public function me(): Response
     {
-        return $this->response->item($this->user, new BaseTransformer());
+        return $this->response->item($this->user, new UserMeTransformer());
     }
 
     protected function proceedToken(JWTSubject $JWTSubject): string
