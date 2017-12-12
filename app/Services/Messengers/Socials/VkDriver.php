@@ -28,16 +28,10 @@ class VkDriver extends AbstractDriver
 
     public function getToken(string $code): Token
     {
+        $url = $this->tokenUrl . '?' . 'client_id=' . $this->clientId . '&client_secret='
+            . $this->clientSecret . '&redirect_uri=' . $this->redirectUrl . '&code='. $code;
 
-        $response = $this->request('POST', $this->tokenUrl, [
-            'json' => [
-                'client_id' => $this->clientId,
-                'client_secret' => $this->clientSecret,
-                'code' => $code,
-                'redirect_uri' => $this->redirectUrl,
-            ],
-            'headers' => ['Accept' => 'application/json']
-        ]);
+        $response = $this->request('GET',$url, []);
 
         $tokenResponse = json_decode($response->getBody(), true);
         return new Token([
@@ -57,7 +51,11 @@ class VkDriver extends AbstractDriver
                 'access_token' => $token->token,
             ]
         ]);
+        $data = json_decode($response->getBody(), true);
 
-        return new SocialUser(json_decode($response->getBody(), true));
+        return new SocialUser([
+            'id' => (string)$data['response'][0]['uid'],
+            'name' => $data['response'][0]['first_name'] . ' ' . $data['response'][0]['last_name'],
+        ]);
     }
 }

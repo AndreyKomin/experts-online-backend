@@ -13,6 +13,8 @@ use App\Models\Repositories\UsersRepository;
 use App\Models\User;
 use App\Repositories\RepositoryFactory;
 use App\Services\Messengers\Socials\FacebookDriver;
+use App\Services\Messengers\Socials\GoogleDriver;
+use App\Services\Messengers\Socials\VkDriver;
 use App\Services\ServiceManager;
 use App\Services\UserServiceManager;
 use App\Transformers\BaseTransformer;
@@ -65,6 +67,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(IMessengerServiceFactory::class, MessengerFactory::class);
         $this->app->bind(FacebookDriver::class, function(Application $application) {
             return new FacebookDriver($application->make(ClientInterface::class), config('services.socials.facebook'));
+        });
+        $this->app->bind(GoogleDriver::class, function(Application $application) {
+            return new GoogleDriver($application->make(ClientInterface::class), config('services.socials.google'));
+        });
+        $this->app->bind(VkDriver::class, function(Application $application) {
+            return new VkDriver($application->make(ClientInterface::class), config('services.socials.vk'));
         });
     }
 }

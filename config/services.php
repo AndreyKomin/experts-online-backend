@@ -41,14 +41,14 @@ return [
             'redirectUrl' => env('APP_URL').'/'
         ],
         'vk' => [
-            'clientId' => '620b4868620b4868620b4868b9624cd8666620b620b4868382f566a534439527a7449ca',
+            'clientId' => '4689934',
             'clientSecret' => 'CcYXIqshESPYX3pULIKH',
-            'redirectUrl' => ''
+            'redirectUrl' => env('APP_URL')
         ],
         'google' => [
             'clientId' => '135562740050-brfjngcfaui2eicj1vpq801hfm07osa4.apps.googleusercontent.com',
             'clientSecret' => 'TJAEEmjDB_j3TaXq6HdoTTqA',
-            'redirectUrl' => ''
+            'redirectUrl' => env('APP_URL')
         ],
     ]
 ];

@@ -20,14 +20,14 @@ class UserServiceManager extends ServiceManager
 
     protected $creationRules = [
         User::LOGIN => 'required|string|unique:users',
-        User::FIRST_NAME => 'string|max:255',
-        User::LAST_NAME => 'string|max:255',
+        User::FIRST_NAME => 'nullable|string|max:255',
+        User::LAST_NAME => 'nullable|string|max:255',
     ];
 
     protected $updateRules = [
         User::LOGIN => 'required|string|unique:users',
-        User::FIRST_NAME => 'string|max:255',
-        User::LAST_NAME => 'string|max:255',
+        User::FIRST_NAME => 'nullable|string|max:255',
+        User::LAST_NAME => 'nullable|string|max:255',
     ];
 
     public function __construct(
@@ -63,7 +63,7 @@ class UserServiceManager extends ServiceManager
                 $names = explode(' ', $socialUser->getProperty('name')) ?? null;
                 if ($names) {
                     $data[User::FIRST_NAME] = $names[0];
-                    $data[User::LAST_NAME] = $names[1];
+                    $data[User::LAST_NAME] = $names[1] ?? null;
                 }
                 $user = $this->create($data);
             } else {

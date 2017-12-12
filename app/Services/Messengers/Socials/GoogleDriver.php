@@ -29,16 +29,14 @@ class GoogleDriver extends AbstractDriver
 
     public function getToken(string $code): Token
     {
+        $url = $this->tokenUrl . '?' . 'client_id=' . $this->clientId . '&client_secret='
+            . $this->clientSecret . '&redirect_uri=' . $this->redirectUrl . '&code='. $code;
 
-        $response = $this->request('POST', $this->tokenUrl, [
-            'json' => [
-                'client_id' => $this->clientId,
-                'client_secret' => $this->clientSecret,
-                'code' => $code,
-                'redirect_uri' => $this->redirectUrl,
-                'grant_type' => 'authorization_code',
+        $response = $this->request('POST',$url, [
+            'headers' => [
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
             ],
-            'headers' => ['Accept' => 'application/json']
         ]);
 
         $tokenResponse = json_decode($response->getBody(), true);

@@ -9,7 +9,8 @@ class Factory implements IMessengerServiceFactory
 {
     protected static $socialDrivers = [
         'vk',
-        'facebook'
+        'facebook',
+        'google',
     ];
 
     public function getDriver(string $driver): IMessengerService
