@@ -42,6 +42,7 @@ class User extends Eloquent implements JWTSubject, AuthContract
 		self::RATING => 'float',
         'isExpert' => 'bool',
         'directInvite' => 'bool',
+        'wantEarn' => 'bool',
 	];
 
     protected $with = [
@@ -61,6 +62,9 @@ class User extends Eloquent implements JWTSubject, AuthContract
         'price',
         'isExpert',
         'directInvite',
+        'wantEarn',
+        'paymentType',
+        'paymentInfo',
 	];
 
 	public function messengers(): HasMany

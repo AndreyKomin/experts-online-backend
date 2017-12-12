@@ -36,6 +36,18 @@ class AddMessengerRows extends Migration
             'canUseForMessage' => 1,
             'canUseForAuth' => 1,
         ]);
+        Messenger::query()->create([
+            'name' => 'Skype',
+            'code' => 'skype',
+            'canUseForMessage' => 1,
+            'canUseForAuth' => 1,
+        ]);
+        Messenger::query()->create([
+            'name' => 'WhatsApp',
+            'code' => 'whatsapp',
+            'canUseForMessage' => 1,
+            'canUseForAuth' => 1,
+        ]);
     }
 
     /**
