@@ -38,6 +38,8 @@ class UsersController extends Controller
         return $this->response->collection(
             $this->repositoryFactory->getQuery()
             ->where('portfolio', 'LIKE', '%' . $request->get('q') .'%')
+            ->orWhere('first_name', 'LIKE', '%' . $request->get('q') .'%')
+            ->orWhere('last_name', 'LIKE', '%' . $request->get('q') .'%')
             ->get(),
             new BaseTransformer()
         );
