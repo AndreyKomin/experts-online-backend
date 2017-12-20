@@ -32,7 +32,9 @@ services:
       retries: 10
     networks:
       - chat
- 
+    volumes:
+      - ./.data/mysql:/var/lib/mysql
+
   redis:
     image: redis:alpine
     container_name: chat-redis
